@@ -28,7 +28,7 @@ app.get("/entry/:id", async (req, res) => {
     }
     const id = parseInt(req.params.id);
     const entry = await Entry.findOne({ id: id });
-    res.send(entry.date);
+    res.status(200).send(entry.date);
 });
 app.post("/entry", async (req, res) => {
     const authorization = req.headers.authorization;
