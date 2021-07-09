@@ -45,11 +45,19 @@ app.post("/entry", async (req, res) => {
     await entry.save();
     res.status(200).send("ID:" + entry.id);
 });
+function validateEmail(email) {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+}
 app.post("/register", async (req, res) => {
     const body = req.body;
     const firstName = body.firstName;
     const lastName = body.lastName;
     const email = body.email;
+    if (!validateEmail(email)) {
+        res.sendStatus(400);
+        return;
+    }
     const isUser = await User.findOne({ where: { email: email } });
     if (isUser) {
         res.sendStatus(400);
