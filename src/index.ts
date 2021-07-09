@@ -3,8 +3,10 @@ import { createConnection } from "typeorm";
 import express from 'express';
 import { User } from './entity/User';
 import { Entry, helpMaterial } from './entity/Entry';
+import { generate } from 'generate-password';
 const app = express();
 const port = 8080;
+app.use(express.json());
 
 app.get("/entry", async (req, res) => {
     const authorization = req.headers.authorization;
@@ -41,10 +43,30 @@ app.post("/entry", async (req, res) => {
     entry.user = user;
     entry.helpMaterial = helpMaterial.audio;
     await entry.save();
-    console.log(entry.helpMaterial);
     res.status(200).send("ID:" + entry.id);
 });
-
+app.post("/register", async (req, res) => {
+    const body = req.body;
+    const firstName = body.firstName;
+    const lastName = body.lastName;
+    const email = body.email;
+    const isUser = await User.findOne({ where: { email: email } });
+    if (isUser) {
+        res.sendStatus(400);
+        return;
+    }
+    const user = new User();
+    user.email = email;
+    user.firstName = firstName;
+    user.lastName = lastName;
+    user.token = generate({
+        length: 12,
+        numbers: true,
+        symbols: true
+    });
+    user.save();
+    res.send(user.token);
+});
 app.delete("/entry", async (req, res) => {
     const authorization = req.headers.authorization;
     const user = await User.findOne({ token: authorization }, { relations: ["entries"] });

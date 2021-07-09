@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, Unique, OneToMany }
 import { Entry } from './Entry';
 
 @Entity()
-@Unique(["token"])
+@Unique(["token", "email"])
 export class User extends BaseEntity {
 
     @PrimaryGeneratedColumn()
@@ -16,6 +16,9 @@ export class User extends BaseEntity {
 
     @Column({ name: "token" })
     token: string;
+
+    @Column({ name: "email" })
+    email: string;
 
     @OneToMany(() => Entry, entry => entry.user)
     entries: Entry[];
