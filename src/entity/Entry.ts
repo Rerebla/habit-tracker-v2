@@ -1,6 +1,13 @@
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './User';
 
+export enum helpMaterial {
+    mind = "mind",
+    picture = "picture",
+    video = "video",
+    text = "text",
+    audio = "audio"
+}
 @Entity()
 export class Entry extends BaseEntity {
     @PrimaryGeneratedColumn()
@@ -13,5 +20,14 @@ export class Entry extends BaseEntity {
         type: "timestamp",
         default: () => "CURRENT_TIMESTAMP"
     })
-    date;
+    date: Date;
+
+    @Column({
+        type: 'enum',
+        enum: helpMaterial
+    })
+    helpMaterial: helpMaterial;
+
+    @Column({ default: "Nothing to add." })
+    notes: string;
 }

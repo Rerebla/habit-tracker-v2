@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { createConnection } from "typeorm";
 import express from 'express';
 import { User } from './entity/User';
-import { Entry } from './entity/Entry';
+import { Entry, helpMaterial } from './entity/Entry';
 const app = express();
 const port = 8080;
 
@@ -39,7 +39,9 @@ app.post("/entry", async (req, res) => {
     }
     const entry = new Entry();
     entry.user = user;
+    entry.helpMaterial = helpMaterial.audio;
     await entry.save();
+    console.log(entry.helpMaterial);
     res.status(200).send("ID:" + entry.id);
 });
 
